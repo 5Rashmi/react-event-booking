@@ -1,0 +1,13 @@
+.seat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: hsl(347, 90%, 92%);
+    color: hsl(347, 94%, 28%);
+    border: 2px solid hsl(347, 94%, 28%);;
+    padding: 5px;
+}
+.seat:hover {
+    background-color: hsl(347, 41%, 58%);
+    color: hsl(347, 90%, 92%);
+}
