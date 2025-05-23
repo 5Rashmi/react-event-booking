@@ -5,10 +5,14 @@ import type { SeatProps } from "../interface/Seat";
 import { Seat } from "./Seat";
 import "./book-seat.css";
 import type CategoryMap from "../interface/CategoryMap";
+import { SelectedCount } from "../ui/SelectedCount";
 
 export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
     const [seatsArr, setSeatsArr] = useState<SeatProps[]>([]);
     const [categorizedSeats, setCategorizedSeats] = useState<CategoryMap>({});
+    let [isSelected, setIsSelected] = useState<Boolean>(false);
+    let [selectedSeats, setSelectedSeats] = useState<SeatProps[]>([]);
+    const count = selectedSeats.length;
     
     useEffect(() => {
     let seatNo: number = 0;
@@ -20,6 +24,7 @@ export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
         "Regular - $150": {seats: []}
     };
 
+    // loop to add the seats
     for(let i=1; i<=rows; i++) {
             for(let j=1; j<=cols; j++) {
                 seatNo++;
@@ -40,8 +45,6 @@ export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
                 
                 newSeats.push({
                     id: `${i}-${j}`,
-                    row: i,
-                    col: j,
                     seatNo,
                     availablity: true,
                     category,
@@ -59,10 +62,33 @@ export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
     setCategorizedSeats(newCategorizedSeats);
 
     }, [rows, cols]);
-    console.log(categorizedSeats);
+
+    // function to toggleSeatSelection
+    const toggleSeatSelection = (seatsid: string) => {
+        setIsSelected(!isSelected);
+        const seatFilter = Object.entries(categorizedSeats).flatMap(([_, data]) => data.seats.filter(seat => seat.id === seatsid));
+        const seatToToggle = seatFilter[0];
+        if(!seatToToggle) return;
+
+        setSelectedSeats(prevSeat => {
+            const exists = prevSeat.find(seat => seat.id === seatsid);
+            if(exists) {
+                const selected = !exists.isSelected;
+                if(!selected) {
+                    return prevSeat.filter(seat => seat.id !== seatsid);
+                }
+                return prevSeat.map(seat => seat.id === seatsid ? {...seat, selected} : seat);
+            } else {
+                return [...prevSeat, {...seatToToggle, isSelected: true}];
+            }
+        })
+    }
 
     return(
         <div>
+            {/* Selected Seats Count */}
+            <SelectedCount count={count}/>
+            {/* Individual Seat */}
             {Object.entries(categorizedSeats).map(([category, data]) => (
                 <div key={category}>
                     <h3>{category}</h3>
@@ -71,12 +97,12 @@ export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
                         <Seat 
                         key={seat.id}
                         id={seat.id} 
-                        row={seat.row}
-                        col={seat.col}
                         seatNo={seat.seatNo} 
                         availablity={seat.availablity}
                         category={seat.category}
-                        price={seat.price}/>
+                        price={seat.price}
+                        isSelected={selectedSeats.some(s => s.id === seat.id)}
+                        seatSelection={() => toggleSeatSelection(seat.id)}/>
                     ))}
                     </div>   
                 </div>

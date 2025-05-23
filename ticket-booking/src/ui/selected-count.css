@@ -1,0 +1,9 @@
+.count {
+    border: 2px solid hsl(347, 94%, 28%);
+    color: hsl(347, 94%, 28%);
+    border-radius: 2em;
+    box-shadow: 2px 2px 2px hsl(347, 94%, 28%);
+}
+p {
+    margin: 2px;
+}
