@@ -10,7 +10,6 @@ import { SelectedCount } from "../ui/SelectedCount";
 export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
     const [seatsArr, setSeatsArr] = useState<SeatProps[]>([]);
     const [categorizedSeats, setCategorizedSeats] = useState<CategoryMap>({});
-    let [isSelected, setIsSelected] = useState<Boolean>(false);
     let [selectedSeats, setSelectedSeats] = useState<SeatProps[]>([]);
     const count = selectedSeats.length;
     
@@ -65,7 +64,6 @@ export const BookSeat: React.FC<seatGrid> = ({rows, cols}) => {
 
     // function to toggleSeatSelection
     const toggleSeatSelection = (seatsid: string) => {
-        setIsSelected(!isSelected);
         const seatFilter = Object.entries(categorizedSeats).flatMap(([_, data]) => data.seats.filter(seat => seat.id === seatsid));
         const seatToToggle = seatFilter[0];
         if(!seatToToggle) return;
